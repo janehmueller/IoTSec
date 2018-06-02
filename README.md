@@ -25,5 +25,5 @@ cd scapy
 ./run_scapy
 
 # Install scapy in environment
-python setup.py install
+sudo python setup.py install
 ```
