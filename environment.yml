@@ -44,7 +44,7 @@ dependencies:
   - pytz==2018.4
   - pyx==0.12.1
   - scandir==1.7
-  - scapy==2.4.0.dev232
+#  - scapy==2.4.0.dev232
   - simplegeneric==0.8.1
   - six==1.11.0
   - subprocess32==3.5.1
