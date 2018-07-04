@@ -5,6 +5,8 @@ from scapy.layers.inet6 import *
 import argparse
 import json
 import time
+import subprocess
+import os
 
 
 well_known_core = '</.well-known/core>;ct=40,</actuators/leds>;title=\"LEDs: ?color='
@@ -24,19 +26,44 @@ def test_well_known_core():
         return None
     return full_response[0][1].load == well_known_core
 
-
 def cli_args():
     parser = argparse.ArgumentParser(description='CoAP Fuzzer for OpenMotes')
-    parser.add_argument("--dest", dest="dst_address", type=str, required=True)
+    #parser.add_argument("--dest", dest="dst_address", type=str, required=True)
     parser.add_argument("--iface", dest="interface", type=str)
     parser.add_argument("--output", dest="output_file", type=str, required=True)
     parser.add_argument("--overwrite", dest="file_overwrite", action='store_true')
     return parser.parse_args()
 
+def setup_devices():
+    devnull = open(os.devnull, 'wb')
+    p = subprocess.Popen(["bash", "./border_router_setup.sh"], stdout=subprocess.PIPE, stderr=devnull)
+    for line in iter(p.stdout.readline, ""):
+        if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
+            border_router_ip_parts = line.split(" ")[-1].split(":")
+            border_router_ip_parts[0] = "fd00"
+            border_router_ip = ":".join(border_router_ip_parts).replace("\n","")
+            break
+
+    q = subprocess.Popen(["bash", "./coap_server_setup.sh"], stdout=subprocess.PIPE, stderr=devnull)
+    time.sleep(1)
+    for line in iter(q.stdout.readline, ""):
+        if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
+            coap_server_ip_parts = line.split(" ")[-1].split(":")
+            coap_server_ip_parts[0] = "fd00"
+            coap_server_ip = ":".join(coap_server_ip_parts).replace("\n","")
+            break
+        elif re.search(".*Activating: sensors/max44009.*", line, flags=0):
+            print("you might need to press reset on the coap-server")
+
+    return (border_router_ip, coap_server_ip)
 
 if __name__ == "__main__":
+    border_router_ip, coap_server_ip = setup_devices()
+    print("border-router: " + border_router_ip)
+    print("coap-server: " + coap_server_ip)
     args = cli_args()
-    dst_address = args.dst_address
+    #dst_address = args.dst_address
+    dst_address = coap_server_ip
     interface = args.interface or "tun0"
     file_mode = "w" if args.file_overwrite else "a"
     output_file = open(args.output_file, file_mode)
