@@ -63,17 +63,18 @@ if __name__ == "__main__":
             # fuzz_pattern.show2()
             packet = IPv6(dst=dst_address)/UDP(sport=34552, dport=5683)/fuzz_pattern
             full_response, empty = sr(packet, iface=interface, timeout=5, verbose=False)
-
             num_responses = len(full_response)
             log_output["request"] = linehexdump(fuzz_pattern, dump=True, onlyhex=1)
-            if num_responses == 0:  # timeout
-                pass
-            elif num_responses == 1:
-                request, response = full_response[0]
-                log_output["response"] = linehexdump(response, dump=True, onlyhex=1)
-                # response.show()
-
-            log_output["well-kown-core"] = test_well_known_core()
+            try:
+                if num_responses == 0:  # timeout
+                    pass
+                elif num_responses == 1:
+                    request, response = full_response[0]
+                    log_output["response"] = linehexdump(response, dump=True, onlyhex=1)
+                    # response.show()
+                log_output["well-kown-core"] = test_well_known_core()
+            except AttributeError:
+                log_output["response"] = None
             log_output["timestamp"] = int(time.time())
             output_file.write(json.dumps(log_output) + "\n")
 
