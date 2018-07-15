@@ -10,4 +10,4 @@ echo "BOARD_REVISION = REV_A1" >> Makefile.target
 echo "upload"
 make coap-example-server.upload MOTE=1
 echo "connect"
-make login MOTE=1 | ts | tee $cwd/coap_server_log.txt
+make login MOTE=1 | ts | tee $cwd/coap_server.log

@@ -10,4 +10,4 @@ echo "BOARD_REVISION = REV_A1" >> Makefile.target
 echo "upload"
 make border-router.upload
 echo "connect"
-make connect-router | ts | tee $cwd/border_router_log.txt
+make connect-router | ts | tee $cwd/border_router.log
