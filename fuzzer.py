@@ -12,7 +12,7 @@ import os
 well_known_core = '</.well-known/core>;ct=40,</actuators/leds>;title=\"LEDs: ?color='
 
 
-def test_well_known_core():
+def test_well_known_core(dst_address):
     wkc_message = CoAP(
         ver=1L,
         type=0,
@@ -26,17 +26,19 @@ def test_well_known_core():
         return None
     return full_response[0][1].load == well_known_core
 
+
 def cli_args():
     parser = argparse.ArgumentParser(description='CoAP Fuzzer for OpenMotes')
-    #parser.add_argument("--dest", dest="dst_address", type=str, required=True)
     parser.add_argument("--iface", dest="interface", type=str)
     parser.add_argument("--output", dest="output_file", type=str, required=True)
     parser.add_argument("--overwrite", dest="file_overwrite", action='store_true')
     return parser.parse_args()
 
+
 def setup_devices():
     devnull = open(os.devnull, 'wb')
     p = subprocess.Popen(["bash", "./border_router_setup.sh"], stdout=subprocess.PIPE, stderr=devnull)
+    border_router_ip = None
     for line in iter(p.stdout.readline, ""):
         if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
             border_router_ip_parts = line.split(" ")[-1].split(":")
@@ -46,6 +48,7 @@ def setup_devices():
 
     q = subprocess.Popen(["bash", "./coap_server_setup.sh"], stdout=subprocess.PIPE, stderr=devnull)
     time.sleep(1)
+    coap_server_ip = None
     for line in iter(q.stdout.readline, ""):
         if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
             coap_server_ip_parts = line.split(" ")[-1].split(":")
@@ -55,14 +58,14 @@ def setup_devices():
         elif re.search(".*Activating: sensors/max44009.*", line, flags=0):
             print("you might need to press reset on the coap-server")
 
-    return (border_router_ip, coap_server_ip)
+    return border_router_ip, coap_server_ip
 
-if __name__ == "__main__":
+
+def main():
     border_router_ip, coap_server_ip = setup_devices()
     print("border-router: " + border_router_ip)
     print("coap-server: " + coap_server_ip)
     args = cli_args()
-    #dst_address = args.dst_address
     dst_address = coap_server_ip
     interface = args.interface or "tun0"
     file_mode = "w" if args.file_overwrite else "a"
@@ -85,10 +88,10 @@ if __name__ == "__main__":
                 code=RandNum(1, 4).__int__(),
                 token=RandBin(RandNum(0, 8)).__bytes__(),
                 options=[(11L, 'core')],
-                paymark='\xff'+str(RandNum(0, 256).__int__())
+                paymark='\xff' + str(RandNum(0, 256).__int__())
             ))
             # fuzz_pattern.show2()
-            packet = IPv6(dst=dst_address)/UDP(sport=34552, dport=5683)/fuzz_pattern
+            packet = IPv6(dst=dst_address) / UDP(sport=34552, dport=5683) / fuzz_pattern
             full_response, empty = sr(packet, iface=interface, timeout=5, verbose=False)
             num_responses = len(full_response)
             log_output["request"] = linehexdump(fuzz_pattern, dump=True, onlyhex=1)
@@ -99,7 +102,7 @@ if __name__ == "__main__":
                     request, response = full_response[0]
                     log_output["response"] = linehexdump(response, dump=True, onlyhex=1)
                     # response.show()
-                log_output["well-kown-core"] = test_well_known_core()
+                log_output["well-kown-core"] = test_well_known_core(dst_address)
             except AttributeError:
                 log_output["response"] = None
             log_output["timestamp"] = int(time.time())
@@ -109,3 +112,7 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         output_file.close()
         exit()
+
+
+if __name__ == "__main__":
+    main()
