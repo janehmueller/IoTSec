@@ -45,32 +45,30 @@ def cli_args():
 def setup_devices(contiki_path, debug=False):
     devnull = open(os.devnull, 'wb')
     p = subprocess.Popen(["bash", "./border_router_setup.sh", contiki_path], stdout=subprocess.PIPE, stderr=devnull)
-    # border_router_ip = None
+    border_router_ip = None
     print("Starting border router...")
     for line in iter(p.stdout.readline, ""):
         if debug:
-            # print(line)
             sys.stdout.write(line)
         if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
             border_router_ip_parts = line.split(" ")[-1].split(":")
             border_router_ip_parts[0] = "fd00"
             border_router_ip = ":".join(border_router_ip_parts).replace("\n","")
-            print("border router started with ip %s ..." % border_router_ip)
+            print("Border router started with ip %s..." % border_router_ip)
             break
 
     q = subprocess.Popen(["bash", "./coap_server_setup.sh", contiki_path], stdout=subprocess.PIPE, stderr=devnull)
     time.sleep(1)
-    # coap_server_ip = None
+    coap_server_ip = None
     print("Starting CoAP server...")
     for line in iter(q.stdout.readline, ""):
         if debug:
-            # print(line)
             sys.stdout.write(line)
         if re.search(".*Tentative link-local IPv6 address.*", line, flags=0):
             coap_server_ip_parts = line.split(" ")[-1].split(":")
             coap_server_ip_parts[0] = "fd00"
             coap_server_ip = ":".join(coap_server_ip_parts).replace("\n","")
-            print("CoAP server started with ip %s ..." % coap_server_ip)
+            print("CoAP server started with ip %s..." % coap_server_ip)
             break
         elif re.search(".*Activating: sensors/max44009.*", line, flags=0):
             print("You might need to press reset on the CoAP server OpenMote...")
@@ -171,8 +169,6 @@ def main():
         border_router_ip, coap_server_ip = setup_devices(args.contiki_path, args.debug)
         assert border_router_ip is not None, "Border router setup failed."
         assert coap_server_ip is not None, "CoAP server setup failed."
-        print("border-router: " + border_router_ip)
-        print("coap-server: " + coap_server_ip)
         dest_address = coap_server_ip
 
     interface = args.interface or "tun0"
