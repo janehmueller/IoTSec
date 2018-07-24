@@ -5,7 +5,7 @@ from scapy.layers.inet6 import *
 from scapy.sendrecv import sr
 from scapy.utils import linehexdump
 
-from fuzzer import setup_devices
+from fuzzer import setup_devices, test_well_known_core
 
 
 def cli_args():
@@ -54,6 +54,7 @@ def main():
         full_response.show()
         print("Response as hex string: %s" % str(linehexdump(full_response, dump=True, onlyhex=1)))
 
+    print(".well-known/core result: %s" % test_well_known_core(dest_address))
 
 if __name__ == "__main__":
     main()
