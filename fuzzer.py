@@ -89,7 +89,7 @@ def random_coap():
         msg_id=RandShort().__int__(),
         token=token,
         options=random_options(),
-        paymark='\xff' + str((RandNum(0, 255).__int__())
+        paymark='\xff' + str((RandNum(0, 255).__int__()))
     )
 
 
