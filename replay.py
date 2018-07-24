@@ -48,7 +48,6 @@ def main():
     full_response, empty = sr(packet, iface=interface, timeout=10, verbose=False)
     if len(full_response) == 0:
         print("Request timed out...")
-        return None
     else:
         print("Received the following response:")
         full_response.show()
