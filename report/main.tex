@@ -2,6 +2,11 @@
 
 \fancyhf{}
 
+% encoding and language
+\usepackage[USenglish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
 \usepackage{booktabs}
 \usepackage{balance}
 \usepackage[caption=false]{subfig}
@@ -15,13 +20,15 @@
 \setlength{\pdfpagewidth}{\pprw}
 \setlength{\pdfpageheight}{\pprh}
 
+\def\@copyrightspace{\relax}
+
 \newacronym{IoT}{IoT}{Internet of Things}
 
 \begin{document}
 
 \title{Security for the Internet of Things - CoAP Fuzzing}
 
-\author{Jan Ehmueller and Justin Trautmann}
+\author{Jan Ehmueller and Justin Trautmann \\ \today}
 
 \begin{abstract}
 %- Mit wenigen Worten das Problem einführen
@@ -34,47 +41,14 @@
 
 \glsresetall
 
-\section{Introduction}
+\input{sections/01_introduction.tex}
+\input{sections/02_background.tex}
+\input{sections/03_related_work.tex}
+\input{sections/04_approach.tex}
+\input{sections/05_implementation.tex}
+\input{sections/06_evaluation.tex}
+\input{sections/07_conclusion_future_work.tex}
 
-%- Kontext einführen
-%- Problem darstellen
-%- Den diesbezüglichen Stand der Technik zusammenfassen
-%- Eure wissenschaftlichen Beiträge auflisten
-
-\section{Background}
-
-%- Relevante Protokolle und Konzepte einführen
-%- Auf das beschränken, was zum Verstehen der nachfolgenden Abschnitte notwendig ist
-%- Bei Platzmangel könnt ihr diesen Abschnitt auch weglassen und stattdessen bei den entsprechenden Stellen Verweise einfügen
-
-\section{Related Work}
-
-%- Umfänglichere Diskussion verwandter Arbeiten
-%- Vergleichend mit eurem Ansatz
-%- Manchmal bietet es sich an diesen Abschnitt erst vor den Conclusions zu bringen
-
-\section{Approach}
-
-%- Präsentation eures Ansatzes
-%- Meistens bietet es sich an erst die grobe Idee zu vermitteln und dann erst ins Detail zu gehen
-%- Auf interessante und wichtige Design-Entscheidungen eingehen
-%- Modelle einsetzen
-
-\section{Implementation}
-
-%- Überlick über eure Implementierung
-%- Modell der Softwarearchitektur
-
-\section{Evaluation}
-
-% Evaluierung interessanter Aspekte anhand von Statistiken
-
-\section{Conclusions and Future Work}
-
-% nochmal auf das Ursprungsproblem und dessen Relevanz zurückkommen
-% nochmal zusammenfassen was ihr beigetragen habt
-% Schlussfolgerungen ziehen
-% Vorschläge für zukünftige Forschungsrichtungen
 
 \balance
 \bibliographystyle{ACM-Reference-Format}
