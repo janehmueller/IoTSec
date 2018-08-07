@@ -1,9 +1,11 @@
 import argparse
 
-from scapy.layers.inet6 import IPv6, UDP
+from scapy.contrib.coap import *
+from scapy.layers.inet6 import *
 from scapy.sendrecv import sr
+from scapy.utils import linehexdump
 
-from fuzzer import setup_devices
+from fuzzer import setup_devices, test_well_known_core
 
 
 def cli_args():
@@ -12,6 +14,8 @@ def cli_args():
     parser.add_argument("--message", dest="message", type=str, required=True)
     parser.add_argument("--skip-setup", dest="skip_setup", action='store_true')
     parser.add_argument("--dest-address", dest="dest_address", type=str)
+    parser.add_argument("--contiki", dest="contiki_path", type=str)
+    parser.add_argument("--debug", dest="debug", action='store_true')
     return parser.parse_args()
 
 
@@ -24,7 +28,8 @@ def main():
         dest_address = args.dest_address
     else:
         # Setup OpenMotes
-        border_router_ip, coap_server_ip = setup_devices()
+        assert args.contiki_path is not None, "Contiki path must be provided for OpenMote setup."
+        border_router_ip, coap_server_ip = setup_devices(args.contiki_path, args.debug)
         assert border_router_ip is not None, "Border router setup failed."
         assert coap_server_ip is not None, "CoAP server setup failed."
         print("border-router: " + border_router_ip)
@@ -33,15 +38,22 @@ def main():
 
     # Create packet from the CoAP hex string
     interface = args.interface or "tun0"
-    coap = bytes(bytearray.fromhex(args.message))
+
+    coap = CoAP(bytes(bytearray.fromhex(args.message)))
     packet = IPv6(dst=dest_address) / UDP(sport=34552, dport=5683) / coap
     print("Sending following packet:")
     packet.show2()
 
     # Replay packet and show response
-    full_response, empty = sr(packet, iface=interface, timeout=5, verbose=False)
-    full_response.show()
+    full_response, empty = sr(packet, iface=interface, timeout=10, verbose=False)
+    if len(full_response) == 0:
+        print("Request timed out...")
+    else:
+        print("Received the following response:")
+        full_response.show()
+        print("Response as hex string: %s" % str(linehexdump(full_response, dump=True, onlyhex=1)))
 
+    print(".well-known/core result: %s" % test_well_known_core(dest_address))
 
 if __name__ == "__main__":
     main()
