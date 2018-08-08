@@ -6,3 +6,15 @@
 	\item Den diesbezüglichen Stand der Technik zusammenfassen
 	\item Eure wissenschaftlichen Beiträge auflisten
 \end{enumerate}
+
+Nowadays, already 8.4 billion connected things are part of the Internet of Things (IoT)~\cite{IoTForecastGartner} and it is constantly growing so that a number of around 30 billion devices can be expected by the year 2020~\cite{IoTForecastNordrum}. IoT devices are used in a variety of application scenarios but have in common, that they are usually heavily constrained with respect to the computation power due to battery restrictions and size. Nonetheless they are mostly connected to the internet and can be accessed from anywhere. Since IoT systems often involve highly personal or enterprise data and mechanisms, this leads to a high demand for security. 
+
+In constrained environments, the conventional internet protocol stack can be hardly applied. Therefore several low-power protocols were especially designed for constrained environments. IoT devices usually run a stack composed of 6LoWPAN, an low-power adaption of wireless IPv6, RPL, a routing protocol for low-power and lossy networks and CoAP, an application level protocol for constrained devices based on UDP. Though all of them can become potential attack vectors, we will subsequently focus on CoAP.
+
+CoAP is known to be possibly vulnerable with respect to protocol parsing, URI processing, proxying and caching, risk of amplification, IP address spoofing and many more. Since some of these vulnerabilities are due to the underlying UDP, only protocol parsing and URI processing are especially interesting when assessing CoAP security.
+
+Finding vulnerabilities in a software systems in conjunction with a hardware system is always a hard task and many methods such as manual testing or code review can only focus on one aspect of the system. Therefore fuzzing can help to find surprising vulnerabilities even in a black-box setting.
+
+% TODO fuzzing techniques
+
+To the best of our knowledge, there is little to no work on CoAP fuzzing on real IoT devices. Melo et al.~\cite{Melo2017RobustnessTO} targeted only CoAP implementations with no respect to the underlying hardware and Chen et al.~\cite{chen2018ndss} focused on indirect CoAP fuzzing by using the smartphone apps of specific IoT devices. Therefore fuzzing a conjoined system of any embedded hardware and a CoAP implementation seems promising for finding further unknown vulnerabilities.
