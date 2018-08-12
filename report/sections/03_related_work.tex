@@ -1,4 +1,5 @@
 \section{Related Work}
+\label{section:related_work}
 
 \begin{enumerate}
 	\item Umfänglichere Diskussion verwandter Arbeiten
@@ -12,7 +13,7 @@ Chen et al.~\cite{chen2018ndss} based their work on the observation that the fir
 
 Furthermore Muench et al.~\cite{EURECOM+5417} addressed the problem of error detection while fuzzing embedded devices in general. Usually total system crashes are used as indicators for successful fuzzing. Unfortunately a variety of software failures such as bugs that cause unintended branching and bring the program in an invalid state or buffer overflows that cause memory corruption and potential execution of data don't cause immediate crashes but lead to general malfunction of the system or cause a crash way later in time. These types of failures are especially hard to find on embedded devices because there are usually just a few mechanisms for memory isolation and protection in place. The authors propose several techniques in order to find these failures even on embedded devices. This includes static instrumentation of the source code or the compiled binary itself with additional memory protection mechanisms, running the software on a more sophisticated host and employ higher level security mechanisms or emulate the device fully or partially. Also hardware instrumentation via debug ports is discussed but rarely applicable on commercial products. Furthermore, different heuristics in order to detect memory corruptions are presented.
 
-Tools for automated code instrumentation in order to detect memory corruptions like the Address Sanitizer~\cite{addressSanitizer} can reliably find memory corruptions when using allocators for memory access. Unfortunately Contiki-NGs memory access is mainly based on global static buffers and therefore cannot be tracked with custom allocators.
+Tools for automated code instrumentation in order to detect memory corruptions like the AddressSanitizer~\cite{addressSanitizer} can reliably find memory corruptions when using allocators for memory access. Unfortunately Contiki-NGs memory access is mainly based on global static buffers and therefore cannot be tracked with custom allocators.
 
 Other approaches on fuzzing different layers of the IoT network stack have been made by Böning et al.~\cite{PawelLeo} who targeted the Contiki-NG RPL implementation on fully emulated devices.
 
