@@ -7,7 +7,7 @@
 	\item Manchmal bietet es sich an diesen Abschnitt erst vor den Conclusions zu bringen
 \end{enumerate}
 
-Previous work on CoAP fuzzing is sparse and only focused on implementation fuzzing. Melo et al.~\cite{Melo2017RobustnessTO} searched for publicly available CoAP implementations on common repository services and search engines and selected a few for testing. Their testing system consisted of the boofuzz framework\footnote{\url{https://github.com/jtpereyda/boofuzz}} in order to start, stop and monitor the systems under test and several \scapy based fuzzing engines. Random as well as mutational and generational fuzzing was applied. As expected, generational fuzzing caused way more crashes than informed random and random fuzzing.
+Previous work on CoAP fuzzing is sparse and only focused on implementation fuzzing. Melo et al.~\cite{Melo2017RobustnessTO} searched for publicly available CoAP implementations on common repository services and search engines and selected a few for testing. Their testing system consisted of the boofuzz framework\footnote{\url{https://github.com/jtpereyda/boofuzz}} in order to start, stop and monitor the systems under test and several \scapy based fuzzing engines. They applied random, mutational and generational fuzzing. As expected, generational fuzzing caused way more crashes than informed random and random fuzzing.
 
 Chen et al.~\cite{chen2018ndss} based their work on the observation that the firmware of most commercial IoT devices is not publicly available but often official smartphone apps are used to communicate with the device. Therefore the app can be used to generate more sophisticated fuzzed messages than random fuzzing would do. They put 17 systems under test that also run different protocols than CoAP and found 8 previously unknown failures.
 
@@ -17,4 +17,4 @@ Tools for automated code instrumentation in order to detect memory corruptions l
 
 Other approaches on fuzzing different layers of the IoT network stack have been made by Böning et al.~\cite{PawelLeo} who targeted the Contiki-NG RPL implementation on fully emulated devices.
 
-Differently to all previous approaches, we tried to apply different fuzzing methods on a CoAP implementation running on a real IoT device in order to find the maximum of also hardware related errors which may be impossible to find in an emulator.
+Different to all previous approaches, we tried to apply multiple fuzzing methods on a CoAP implementation running on a real IoT device in order to find software errors as well as hardware related errors, which may be impossible to find in an emulator.
