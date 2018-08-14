@@ -1,10 +1,10 @@
 \section{Implementation}
 \label{section:implementation}
 
-\begin{enumerate}
-	\item Überlick über eure Implementierung
-	\item Modell der Softwarearchitektur
-\end{enumerate}
+%\begin{enumerate}
+%	\item Überlick über eure Implementierung
+%	\item Modell der Softwarearchitektur
+%\end{enumerate}
 
 We first implemented a script to fuzz a CoAP server. The workflow of that script is shown in \Autoref{figure:fuzz_flow_chart}. As we described in \Autoref{section:background}, we use \scapy and its CoAP community contribution\footnote{\url{https://github.com/secdev/scapy/blob/master/scapy/contrib/coap.py}} to create crafted CoAP packets. We test the availability of the IoT device after each crafted packet by sending a CoAP request to the URI ``/.well-known/core`` as we reported in \Autoref{section:approach}. We log the timestamp, the fuzzed request, its response and the result of the ``well-known-core`` check for each crafted packet.
 

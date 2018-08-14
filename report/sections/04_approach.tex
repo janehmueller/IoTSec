@@ -1,12 +1,12 @@
 \section{Approach}
 \label{section:approach}
 
-\begin{enumerate}
-	\item Präsentation eures Ansatzes
-	\item Meistens bietet es sich an erst die grobe Idee zu vermitteln und dann erst ins Detail zu gehen
-	\item Auf interessante und wichtige Design-Entscheidungen eingehen
-	\item Modelle einsetzen
-\end{enumerate}
+%\begin{enumerate}
+%	\item Präsentation eures Ansatzes
+%	\item Meistens bietet es sich an erst die grobe Idee zu vermitteln und dann erst ins Detail zu gehen
+%	\item Auf interessante und wichtige Design-Entscheidungen eingehen
+%	\item Modelle einsetzen
+%\end{enumerate}
 
 Since we intend to fuzz a CoAP implementation running on a real IoT device we needed to decide on a setup that enables us to properly send messages with a high throughput and to implement a fuzzer in an easy-to-use high-level language. Having these goals we decided against fuzzing as an internal attacker from an embedded device in the IoT network, since it has limited resources compared to a desktop computer or laptop. It would also mean that we would need to implement the fuzzer in C, which would take us longer and it would be harder to implement features compared to a scripting language like Python.
 
@@ -15,9 +15,8 @@ We therefore decided to fuzz the IoT device as an external attacker from a lapto
 Having decided on the setup we chose to implement the fuzzer in Python and similarly to Melo et al.~\cite{Melo2017RobustnessTO} we use \scapy to create crafted CoAP packets and send them to the IoT device. Our fuzzing workflow looks as follows. We first send a crafted packet to the CoAP server and await a possible response. After getting the response or getting a timeout (e.g., after sending a NON-message) we then test if the IoT device is still reachable or if it somehow does not respond to messages anymore (e.g., due to a crash or some other malfunction). 
 
 \begin{figure}[h]
-		\centering
-		TODO
-		% \includegraphics[width=0.5\textwidth]{img/coap_header}
+		\centering		
+		\includegraphics[width=0.5\textwidth]{images/coap_message_format.pdf}
 		\caption{CoAP header fields defined in the CoAP RFC~\cite{RFC7252}}
 		\label{figure:coap_header}
 \end{figure}
