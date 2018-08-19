@@ -18,6 +18,6 @@ Setup times for the devices can vary due to cached binaries but can reach the ma
 	% \includegraphics[width=0.5\textwidth]{images/fuzzing_performance}
 	\caption{Processing time of CoAP messages with different amounts of options}
 	\label{figure:fuzzing_performance}
-\end{figure}[h]
+\end{figure}
 
 In order to evaluate the fuzzer and the system under test, we performed 60.000 fuzzing requests but did not succeeded in causing a crash or a device malfunction. In order to make sure that potential crashes can be found by our setup, we temporarily added an infinite loop to the CoAP implementation of Contiki-NG. This loop was entered if the token length had a specific value and the hardware watchdog subsequently triggered a restart. All of these expected crashes were properly tracked by our fuzzer.
