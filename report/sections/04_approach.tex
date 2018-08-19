@@ -28,7 +28,7 @@ Having decided on the setup, we chose to implement the fuzzer in Python and simi
 	\label{figure:coap_header}
 \end{figure}
 
-After determining the message flow we now needed to decide how the craft the CoAP packets. We first read the CoAP RFC and analyzed the CoAP message header in \Autoref{figure:coap_header}. Since we know the protocol being used we chose generational fuzzing as fuzzing approach. And as Contiki-NG is open source we can verify how the header fields are handled and parsed which allows to employ white-box fuzzing. We further describe how we fuzz each header field:
+After determining the message flow we now needed to decide how the craft the CoAP packets. We first read the CoAP RFC and analyzed the CoAP message header in \Autoref{figure:coap_header}. From the fuzzing approaches presented in \Autoref{section:background}, we chose generational fuzzing since we know the protocol being used. Contiki-NG is open source as well, which means that we can employ white-box fuzzing and verify how the header fields are handled and parsed. We further describe how we fuzz each header field:
 \begin{enumerate}
 	\item \textbf{Version}: there is currently only one version of CoAP so the version has to be always 1. Contiki-NG has a simple equality check for this field so there is no point in fuzzing this field.
 	\item \textbf{Message Type}: since all four message types are valid we simply randomly fuzz this field.
