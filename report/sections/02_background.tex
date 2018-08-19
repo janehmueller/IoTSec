@@ -1,15 +1,16 @@
 \section{Background}
 \label{section:background}
-
 %\begin{enumerate}
 %	\item Relevante Protokolle und Konzepte einführen
 %	\item Auf das beschränken, was zum Verstehen der nachfolgenden Abschnitte notwendig ist
 %	\item Bei Platzmangel könnt ihr diesen Abschnitt auch weglassen und stattdessen bei den entsprechenden Stellen Verweise einfügen
 %\end{enumerate}
 
+This section first introduces the Constrained Application Protocol and its message format. Then the constrained hardware is presented and finally, multiple fuzzing approaches are explained.
+
 \subsection{CoAP}
 
-The CoAP protocol defined in RFC7252 a lightweight and RESTful protocoll that can be easily mapped on HTTP~\cite{RFC7252}. Basically, four types of messages can be transferred via UDP. A request can consist of Confirmable (CON) and Non-confirmable (NON) messages. Confirmable messages are expected to be responded by an Acknowledgment (ACK) message. Furthermore, reset messages (RST) can be send. Non-confirmable messages don't require any response but a response can be send as a NON message. All of these message types can use the four methods GET, PUT, POST and DELETE and get back defined status codes that are very similar to their corresponding HTTP methods and codes. Furthermore, every message is identified by an ID and a token and can be adjusted by several options. In \Autoref{section:approach} we further describe and evaluate specific properties of the CoAP message fields.
+The CoAP protocol defined in RFC7252 a lightweight and RESTful protocoll that can be easily mapped on HTTP~\cite{RFC7252}. Basically, four types of messages can be transferred via UDP. A request can consist of Confirmable (CON) and Non-confirmable (NON) messages. Confirmable messages are expected to be responded by an Acknowledgment (ACK) message. Furthermore, reset messages (RST) can be sent. Non-confirmable messages don't require any response but a response can be sent as a NON message. All of these message types can use the four methods GET, PUT, POST and DELETE and get back defined status codes that are very similar to their corresponding HTTP methods and codes. Furthermore, every message is identified by an ID and a token and can be adjusted by several options. In \Autoref{section:approach} we further describe and evaluate specific properties of the CoAP message fields.
 
 \subsection{Hardware}
 
