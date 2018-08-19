@@ -15,10 +15,10 @@ We therefore decided to fuzz the IoT device as an external attacker from a lapto
 Having decided on the setup we chose to implement the fuzzer in Python and similarly to Melo et al.~\cite{Melo2017RobustnessTO} we use \scapy to create crafted CoAP packets and send them to the IoT device. Our fuzzing workflow looks as follows. We first send a crafted packet to the CoAP server and await a possible response. After getting the response or getting a timeout (e.g., after sending a NON-message) we then test if the IoT device is still reachable or if it somehow does not respond to messages anymore (e.g., due to a crash or some other malfunction). 
 
 \begin{figure}[h]
-		\centering		
-		\includegraphics[width=0.5\textwidth]{images/coap_message_format}
-		\caption{CoAP header fields defined in the CoAP RFC~\cite{RFC7252}}
-		\label{figure:coap_header}
+	\centering		
+	\includegraphics[width=0.5\textwidth]{images/coap_message_format}
+	\caption{CoAP header fields defined in the CoAP RFC~\cite{RFC7252}}
+	\label{figure:coap_header}
 \end{figure}
 
 After determining the message flow we now needed to decide how the craft the CoAP packets. We first read the CoAP RFC and analyzed the CoAP message header in \Autoref{figure:coap_header}. Since we know the protocol being used we chose generational fuzzing as fuzzing approach. And as Contiki-NG is open source we can verify how the header fields are handled and parsed which allows to employ white-box fuzzing. We further describe how we fuzz each header field:
