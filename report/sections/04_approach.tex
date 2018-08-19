@@ -8,11 +8,18 @@
 %	\item Modelle einsetzen
 %\end{enumerate}
 
-Since we intend to fuzz a CoAP implementation running on a real IoT device we needed to decide on a setup that enables us to properly send messages with a high throughput and to implement a fuzzer in an easy-to-use high-level language. Having these goals we decided against fuzzing as an internal attacker from an embedded device in the IoT network, since it has limited resources compared to a desktop computer or laptop. It would also mean that we would need to implement the fuzzer in C, which would take us longer and it would be harder to implement features compared to a scripting language like Python.
+Since we intended to fuzz a CoAP implementation running on a real IoT device, we needed to decide on a setup that enables us to properly send messages with a high throughput and to implement a fuzzer in an easy-to-use high-level language. Having these goals, we decided against fuzzing as an internal attacker from an embedded device in the IoT network, since it has limited resources compared to a desktop computer or laptop. It would also mean that we would need to implement the fuzzer in C, which would take us longer and it would be harder to implement features compared to a scripting language like Python.
 
-We therefore decided to fuzz the IoT device as an external attacker from a laptop that is not part of the IoT network. To do so we need to be able to communicate with the embedded device via IPv6, which is possible if we set up one OpenMote as a border router and a second one as a CoAP server. Via the border router we can send messages via IPv6 into the IoT network and therefore send messages to the CoAP server. The CoAP server uses the Contiki-NG CoAP implementation and runs its CoAP example server on the application layer. Since we only want to fuzz CoAP it does not matter to us what the server on the application layer does with the payload of the CoAP messages.
+We therefore decided to fuzz the IoT device as an external attacker from a laptop that is not part of the IoT network. To do so, we need to be able to communicate with the embedded device via IPv6, which is possible if we set up one OpenMote as a border router and a second one as a CoAP server. Via the border router, we can send messages with IPv6 into the IoT network and therefore send messages to the CoAP server. The CoAP server uses the Contiki-NG CoAP implementation and runs the Contiki-NG CoAP example server on the application layer. Since we only want to fuzz the CoAP implementation, it does not matter what the server on the application layer does with the payload of the CoAP messages. This setup is displayed in \Autoref{figure:fuzzing_setup}.
 
-Having decided on the setup we chose to implement the fuzzer in Python and similarly to Melo et al.~\cite{Melo2017RobustnessTO} we use \scapy to create crafted CoAP packets and send them to the IoT device. Our fuzzing workflow looks as follows. We first send a crafted packet to the CoAP server and await a possible response. After getting the response or getting a timeout (e.g., after sending a NON-message) we then test if the IoT device is still reachable or if it somehow does not respond to messages anymore (e.g., due to a crash or some other malfunction). 
+\begin{figure}[h]
+	\centering		
+	\includegraphics[width=0.5\textwidth]{images/fuzzing_setup}
+	\caption{Setup of the embedded devices}
+	\label{figure:fuzzing_setup}
+\end{figure}
+
+Having decided on the setup, we chose to implement the fuzzer in Python and similarly to Melo et al.~\cite{Melo2017RobustnessTO} we use \scapy to create crafted CoAP packets and send them to the IoT device. Our fuzzing workflow looks as follows. We first send a crafted packet to the CoAP server and await a possible response. After getting the response or getting a timeout (e.g., after sending a NON-message) we then test if the IoT device is still reachable or if it somehow does not respond to messages anymore (e.g., due to a crash or some other malfunction). 
 
 \begin{figure}[h]
 	\centering		
@@ -21,7 +28,7 @@ Having decided on the setup we chose to implement the fuzzer in Python and simil
 	\label{figure:coap_header}
 \end{figure}
 
-After determining the message flow we now needed to decide how the craft the CoAP packets. We first read the CoAP RFC and analyzed the CoAP message header in \Autoref{figure:coap_header}. Since we know the protocol being used we chose generational fuzzing as fuzzing approach. And as Contiki-NG is open source we can verify how the header fields are handled and parsed which allows to employ white-box fuzzing. We further describe how we fuzz each header field:
+After determining the message flow we now needed to decide how the craft the CoAP packets. We first read the CoAP RFC and analyzed the CoAP message header in \Autoref{figure:coap_header}. From the fuzzing approaches presented in \Autoref{section:background}, we chose generational fuzzing since we know the protocol being used. Contiki-NG is open source as well, which means that we can employ white-box fuzzing and verify how the header fields are handled and parsed. We further describe how we fuzz each header field:
 \begin{enumerate}
 	\item \textbf{Version}: there is currently only one version of CoAP so the version has to be always 1. Contiki-NG has a simple equality check for this field so there is no point in fuzzing this field.
 	\item \textbf{Message Type}: since all four message types are valid we simply randomly fuzz this field.
