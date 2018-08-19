@@ -11,6 +11,7 @@ This section first introduces the Constrained Application Protocol and its messa
 \subsection{CoAP}
 
 The CoAP protocol, defined in RFC7252, is a lightweight and RESTful protocol that can be easily mapped on HTTP~\cite{RFC7252}. Basically, four types of messages can be transferred via UDP. A request can consist of Confirmable (CON) and Non-confirmable (NON) messages. Confirmable messages are expected to be responded by an Acknowledgment (ACK) message. Furthermore, reset messages (RST) can be sent. Non-confirmable messages don't require any response but a response can be sent as a NON message. All of these message types can use the four methods GET, PUT, POST and DELETE and get back defined status codes that are very similar to their corresponding HTTP methods and codes. Furthermore, every message is identified by an ID and a token and the message can be adjusted by several options. In \Autoref{section:approach} we further describe and evaluate specific properties of the CoAP message fields.
+Additionally to the original CoAP RFC, various augmenting RFCs exist and reside in different stages of the standardization process. Most often, the block-wise transfer (RFC7959\footnote{https://tools.ietf.org/html/rfc7959}) and the observation of CoAP resources is implemented (RFC7641\footnote{https://tools.ietf.org/html/rfc7641}).
 
 \subsection{Hardware}
 
