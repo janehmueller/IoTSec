@@ -38,7 +38,7 @@ def cli_args():
     parser.add_argument("--overwrite", dest="file_overwrite", action='store_true')
     parser.add_argument("--debug", dest="debug", action='store_true')
     parser.add_argument("--clean", dest="clean", action='store_true')
-    parser.add_argument("--benchmark", dest="benchmark", type=int)
+    # parser.add_argument("--benchmark", dest="benchmark", type=int)
     return parser.parse_args()
 
 
@@ -76,7 +76,7 @@ def setup_devices(contiki_path, debug=False):
     return border_router_ip, coap_server_ip
 
 
-def random_coap():
+def random_coap(n=0, benchmark=False):
     token = RandBin(RandNum(0, 8)).__bytes__()
     token_len = RandNum(0, 8).__int__()  # len(token)
     return CoAP(
@@ -86,12 +86,12 @@ def random_coap():
         code=random_status_code(),
         msg_id=RandShort().__int__(),
         token=token,
-        options=random_options(),
+        options=random_options(n, benchmark),
         paymark='\xff' + str((RandNum(0, 255).__int__()))
     )
 
 
-def random_options():
+def random_options(n=0, benchmark=False):
     """
     IF_MATCH = 1
     URI_HOST = 3
@@ -116,6 +116,9 @@ def random_options():
     option_ids = [1, 3, 4, 5, 6, 7, 8, 11, 12, 14, 15, 17, 20, 23, 27, 28, 35, 39, 60]
     num_options = RandNum(0, len(option_ids)).__int__()
     selected_options = random.sample(option_ids, num_options)
+    if benchmark:
+        num_options = n % (len(option_ids) + 1)
+        selected_options = option_ids[:num_options]
     return [(opt, RandString(RandNum(0, 12).__int__()).__str__()) for opt in selected_options]
 
 
@@ -178,22 +181,26 @@ def main():
         "dest_address": dest_address,
         "interface": interface
     }) + "\n")
-    log_output = {}
-    start_time = default_timer()
     try:
         num_packets = 1
         print()
         while True:
             sys.stdout.write("\rSending packet %d..." % num_packets)
             sys.stdout.flush()
-            # print("Sending packet %d..." % num_packets)
-            fuzz_pattern = random_coap()
-            # fuzz_pattern.show()
-            # print(linehexdump(fuzz_pattern, dump=True, onlyhex=1))
+
+            start_time = default_timer()
+            log_output = {}
+
+            # build CoAP packet
+            fuzz_pattern = random_coap(n=num_packets, benchmark=True)
             packet = IPv6(dst=dest_address) / UDP(sport=34552, dport=5683) / fuzz_pattern
+            packet_build_time = default_timer() - start_time
+
             full_response, empty = sr(packet, iface=interface, timeout=timeout, verbose=False)
+            packet_send_receive_time = default_timer() - start_time - packet_build_time
             num_responses = len(full_response)
             log_output["request"] = linehexdump(fuzz_pattern, dump=True, onlyhex=1)
+
             try:
                 if num_responses == 0:  # timeout
                     pass
@@ -201,10 +208,21 @@ def main():
                     request, response = full_response[0]
                     log_output["response"] = linehexdump(response, dump=True, onlyhex=1)
                     # response.show()
+                wkc_time_start = default_timer()
                 log_output["well-kown-core"] = test_well_known_core(dest_address)
+                wkc_time = default_timer() - wkc_time_start
             except AttributeError:
                 log_output["response"] = None
+                wkc_time = None
+
             log_output["timestamp"] = int(time.time())
+            log_output["benchmark"] = {
+                "build_time": packet_build_time,
+                "num_options": num_packets % 20,
+                "send_receive_time": packet_send_receive_time,
+                "wkc_time": wkc_time,
+                "total": default_timer() - start_time
+            }
             output_file.write(json.dumps(log_output) + "\n")
 
             # TODO: make this work
@@ -219,10 +237,10 @@ def main():
             #     print("OpenMote back up...")
 
             num_packets += 1
-            if args.benchmark is not None and num_packets >= args.benchmark:
-                print("\nFinished benchmark of %d packets..." % args.benchmark)
-                print("Took %s seconds" % str(default_timer() - start_time))
-                break
+            # if args.benchmark is not None and num_packets >= args.benchmark:
+            #     print("\nFinished benchmark of %d packets..." % args.benchmark)
+            #     print("Took %s seconds" % str(default_timer() - start_time))
+            #     break
     except (KeyboardInterrupt, SystemExit):
         output_file.close()
         exit()
