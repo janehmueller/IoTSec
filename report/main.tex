@@ -31,6 +31,7 @@
 % shortcut for consistent naming of scapy
 \usepackage{xspace}
 \newcommand{\scapy}{Scapy\xspace}
+\newcommand{\python}{Python\xspace}
 
 % autoref with capital letter (from https://tex.stackexchange.com/a/40413)
 \usepackage{catoptions}
@@ -70,8 +71,8 @@
 \author{Jan Ehmueller and Justin Trautmann \\ \today}
 
 \begin{abstract}
-The Internet of Things (IoT) is constantly increasing in the number of devices with currently 8.4 billion devices and an expected 30 billion devices by 2020. These devices are usually heavily constrained in their computing power, but they are mostly connected to the internet and involve highly personal or enterprise data that demands for a high level of security. One protocol used in the application layer of the network stacks of such devices is the Constrained Application Protocol (CoAP).
-Melo et al.~\cite{Melo2017RobustnessTO} assessed multiple CoAP implementations using fuzzing techniques, but tested them independent of the constrained devices on which they would usually run. This work tests the CoAP implementation of the popular open-source operating system for IoT-devices, Contiki-NG, on constrained devices instead of on conventional computers or an emulated setting. This test is also using fuzzing techniques to find security vulnerabilities.
+The Internet of Things (IoT) is constantly increasing in the number of devices with currently 8.4 billion devices and 30 billion devices expected by 2020. These devices are usually heavily constrained in their computing power, but mostly connected to the internet and involve highly personal or enterprise data that demands for a high level of security. One protocol used in the application layer of the network stacks of such devices is the Constrained Application Protocol (CoAP).
+Melo et al.~\cite{Melo2017RobustnessTO} assessed multiple CoAP implementations using fuzzing techniques, but tested them independently of the constrained devices on which they would usually run. This work tests the CoAP implementation of the popular open-source operating system for IoT-devices, Contiki-NG, on constrained devices instead of on conventional computers or an emulated setting and uses fuzzing techniques to find security vulnerabilities.
 We did not find any security vulnerabilities, which does not mean that the CoAP implementation of Contiki-NG does not contain any vulnerabilities. It does however speak for the security and robustness of this implementation.
 % \begin{enumerate}
 % 	\item Mit wenigen Worten das Problem einführen
